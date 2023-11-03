@@ -1,0 +1,19 @@
+ion-button {
+    text-transform: none !important;
+    margin-top: 1rem;
+}
+
+.qr-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 16px; /* Ajusta según tus necesidades */
+}
+
+.qr-container img {
+    width: 100%;
+    max-width: 200px; /* Ajusta según tus necesidades */
+    height: auto;
+    margin-top: 2rem; /* Ajusta según tus necesidades */
+}

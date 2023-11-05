@@ -7,12 +7,11 @@ const config: CapacitorConfig = {
       androidScaleType: "CENTER_CROP",
       splashFullScreen: true,
       splashImmersive: true,
-      layoutName: "launch_screen",
-      useDialog: true,
+      layoutName: "launch_screen"
     }
   },
   appId: 'io.ionic.starter',
-  appName: 'QR Creador',
+  appName: 'Generador QR',
   webDir: 'www',
   server: {
     androidScheme: 'https'

@@ -1,7 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { IonModal } from '@ionic/angular';
-import { OverlayEventDetail } from '@ionic/core/components';
 import * as QRCode from 'qrcode-generator';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { Share } from '@capacitor/share';
@@ -12,15 +11,30 @@ import { Share } from '@capacitor/share';
   styleUrls: ['tab1.page.scss']
 })
 export class Tab1Page {
+
+  @ViewChild(IonModal) modal!: IonModal;
+
+  // QR
   textoQR: string = '';
   qrImageData: string = '';
-  test: string = '';
-  @ViewChild(IonModal)
-  modal!: IonModal;
 
-  message = 'This modal example uses triggers to automatically open a modal when the button is clicked.';
+  // Whatsapp
+  whatsappModal = false;
   whatsapp = '';
   whatsappMessage = '';
+
+  // SMS
+  smsModal = false;
+  sms = '';
+  smsMessage = '';
+
+  // URL
+  urlModal = false;
+  url = '';
+
+  // Phone
+  phoneModal = false;
+  phone = '';
 
   constructor(private alertController: AlertController) {}
 
@@ -61,7 +75,6 @@ export class Tab1Page {
 
   async compartirQR(): Promise<void> {
     try {
-      const can = await Share.canShare()
       const imageName = 'qrimage.png'
       const directory = Directory.Cache
       await Filesystem.writeFile({
@@ -84,17 +97,59 @@ export class Tab1Page {
     }
   }
 
-  // Cerrar cualquier modal
-  closeModal() {
-    this.textoQR = ''
-    this.modal.dismiss(null, 'cancel');
+  openModal () {
+    this.modal.present();
+    this.whatsappModal = false;
+    this.smsModal = false;
+    this.urlModal = false;
+    this.phoneModal = false;
   }
 
-  confirmWhatapp() {
+  setModal(modal: string) {
+    this.openModal();
+    switch (modal) {
+      case 'whatsapp':
+        this.whatsappModal = true;
+        this.whatsapp
+        break;
+      case 'sms':
+        this.smsModal = true;
+        break;
+      case 'url':
+        this.urlModal = true;
+        break;
+      case 'phone':
+        this.phoneModal = true;
+        break;
+    }
+  }
+
+  // Cerrar cualquier modal
+  closeModal() {
+    this.modal.dismiss(null, 'cancel')
     this.textoQR = ''
-    this.textoQR = `https://wa.me/${this.whatsapp}?text=${encodeURIComponent(this.whatsappMessage)}`
+  }
+
+  confirmWhatsapp() {
+    this.textoQR = `https://wa.me/${this.whatsapp}`
+    this.textoQR += `?text=${encodeURIComponent(this.whatsappMessage)}`
     this.modal.dismiss(null, 'confirm');
   }
 
+  confirmSMS() {
+    this.textoQR = `SMSTO:${this.sms}`
+    this.textoQR += `:${this.smsMessage}`
+    this.modal.dismiss(null, 'confirm');
+  }
+
+  confirmURL() {
+    this.textoQR = `${this.url}`
+    this.modal.dismiss(null, 'confirm');
+  }
+
+  confirmPhone() {
+    this.textoQR = `tel:${this.phone}`
+    this.modal.dismiss(null, 'confirm');
+  }
 
 }

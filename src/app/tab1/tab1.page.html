@@ -1,21 +1,25 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Crear QR
+      Generar QR
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding container">
-  <ion-chip id="whatsapp-modal">
+  <ion-chip (click)="setModal('whatsapp')">
     <ion-icon name="logo-whatsapp" expand="block"></ion-icon>
     <ion-label>WhatsApp</ion-label>
   </ion-chip>
-  <ion-chip>
+  <ion-chip (click)="setModal('sms')">
     <ion-icon name="chatbubbles"></ion-icon>
     <ion-label>SMS</ion-label>
   </ion-chip>
-  <ion-chip>
+  <ion-chip (click)="setModal('phone')">
+    <ion-icon name="call"></ion-icon>
+    <ion-label>Teléfono</ion-label>
+  </ion-chip>
+  <ion-chip (click)="setModal('url')">
     <ion-icon name="link"></ion-icon>
     <ion-label>URL</ion-label>
   </ion-chip>
@@ -29,24 +33,27 @@
     <img [src]="qrImageData" alt="QR Code">
     <ion-button expand="full" (click)="compartirQR()" aria-label="Compartir código QR">Compartir</ion-button>
   </div>
-  <ion-modal trigger="whatsapp-modal">
+  <ion-modal>
     <ng-template>
       <ion-header>
         <ion-toolbar>
           <ion-buttons slot="start">
-            <ion-button (click)="closeModal()">Cancelar</ion-button>
+            <ion-button (click)="closeModal()" (click)="modal.dismiss()">Cancelar</ion-button>
           </ion-buttons>
           <ion-buttons slot="end">
-            <ion-button (click)="confirmWhatapp()" [strong]="true">Confirmar</ion-button>
+            <ion-button *ngIf="whatsappModal" (click)="confirmWhatsapp()" [strong]="true">Confirmar</ion-button>
+            <ion-button *ngIf="smsModal" (click)="confirmSMS()" [strong]="true">Confirmar</ion-button>
+            <ion-button *ngIf="urlModal" (click)="confirmURL()" [strong]="true">Confirmar</ion-button>
+            <ion-button *ngIf="phoneModal" (click)="confirmPhone()" [strong]="true">Confirmar</ion-button>
           </ion-buttons>
         </ion-toolbar>
       </ion-header>
-      <ion-content class="ion-padding">
+      <ion-content class="ion-padding" *ngIf="whatsappModal">
         <ion-item>
           <ion-input
-            label="Ingresa tu número de WhatsApp"
+            label="Ingresa el número de WhatsApp"
             labelPlacement="stacked"
-            type="text"
+            type="tel"
             placeholder="+595961344674"
             [(ngModel)]="whatsapp"
           ></ion-input>
@@ -61,8 +68,51 @@
           ></ion-input>
         </ion-item>
       </ion-content>
+      <ion-content class="ion-padding" *ngIf="smsModal">
+        <ion-item>
+          <ion-input
+            label="Ingresa el número"
+            labelPlacement="stacked"
+            type="tel"
+            placeholder="0961344674"
+            [(ngModel)]="sms"
+          ></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input
+            label="Ingresa un mensaje (opcional)"
+            labelPlacement="stacked"
+            type="text"
+            placeholder="¡Buenos Días!"
+            [(ngModel)]="smsMessage"
+          ></ion-input>
+        </ion-item>
+      </ion-content>
+      <ion-content class="ion-padding" *ngIf="urlModal">
+        <ion-item>
+          <ion-input
+            label="Ingresa la URL"
+            labelPlacement="stacked"
+            type="url"
+            placeholder="https://www.google.com.py"
+            [(ngModel)]="url"
+          ></ion-input>
+        </ion-item>
+      </ion-content>
+      <ion-content class="ion-padding" *ngIf="phoneModal">
+        <ion-item>
+          <ion-input
+            label="Ingresa el número"
+            labelPlacement="stacked"
+            type="tel"
+            placeholder="0961344674"
+            [(ngModel)]="phone"
+          ></ion-input>
+        </ion-item>
+      </ion-content>
     </ng-template>
   </ion-modal>
+  
 </ion-content>
 
 

@@ -12,16 +12,24 @@
     <ion-label>WhatsApp</ion-label>
   </ion-chip>
   <ion-chip (click)="setModal('sms')">
-    <ion-icon name="chatbubbles"></ion-icon>
+    <ion-icon name="chatbubbles-outline"></ion-icon>
     <ion-label>SMS</ion-label>
   </ion-chip>
   <ion-chip (click)="setModal('phone')">
-    <ion-icon name="call"></ion-icon>
+    <ion-icon name="call-outline"></ion-icon>
     <ion-label>Teléfono</ion-label>
   </ion-chip>
   <ion-chip (click)="setModal('url')">
     <ion-icon name="link"></ion-icon>
     <ion-label>URL</ion-label>
+  </ion-chip>
+  <ion-chip (click)="setModal('wifi')">
+    <ion-icon name="wifi"></ion-icon>
+    <ion-label>WIFI</ion-label>
+  </ion-chip>
+  <ion-chip (click)="setModal('email')">
+    <ion-icon name="mail-outline"></ion-icon>
+    <ion-label>Email</ion-label>
   </ion-chip>
   <div class="custom-input">
     <ion-textarea [(ngModel)]="textoQR" maxlength="250" placeholder="Texto para el QR"></ion-textarea>
@@ -45,6 +53,8 @@
             <ion-button *ngIf="smsModal" (click)="confirmSMS()" [strong]="true">Confirmar</ion-button>
             <ion-button *ngIf="urlModal" (click)="confirmURL()" [strong]="true">Confirmar</ion-button>
             <ion-button *ngIf="phoneModal" (click)="confirmPhone()" [strong]="true">Confirmar</ion-button>
+            <ion-button *ngIf="wifiModal" (click)="confirmWifi()" [strong]="true">Confirmar</ion-button>
+            <ion-button *ngIf="emailModal" (click)="confirmEmail()" [strong]="true">Confirmar</ion-button>
           </ion-buttons>
         </ion-toolbar>
       </ion-header>
@@ -80,7 +90,7 @@
         </ion-item>
         <ion-item>
           <ion-input
-            label="Ingresa un mensaje (opcional)"
+            label="Ingresa un mensaje"
             labelPlacement="stacked"
             type="text"
             placeholder="¡Buenos Días!"
@@ -109,6 +119,60 @@
             [(ngModel)]="phone"
           ></ion-input>
         </ion-item>
+      </ion-content>
+      <ion-content class="ion-padding" *ngIf="wifiModal">
+        <ion-item>
+          <ion-select placeholder="Tipo de seguridad" [(ngModel)]="wifiSecurity">
+            <ion-select-option value="WPA">WPA/WPA2</ion-select-option>
+            <ion-select-option value="WEP">WEP</ion-select-option>
+            <ion-select-option value="NOPASS">Sin contraseña</ion-select-option>
+          </ion-select>
+        </ion-item>   
+        <ion-item>
+          <ion-input
+            label="Nombre de red (SSID)"
+            labelPlacement="stacked"
+            type="text"
+            placeholder="Café WIFI"
+            [(ngModel)]="wifiSSID"
+          ></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input
+            label="Ingresa la contraseña"
+            labelPlacement="stacked"
+            type="text"
+            placeholder="Contraseña"
+            [(ngModel)]="wifiPassword"
+          ></ion-input>
+        </ion-item>  
+        <ion-item>
+          <ion-label>¿Oculto?</ion-label>
+          <ion-checkbox [(ngModel)]="wifiHidden"></ion-checkbox>
+        </ion-item>           
+      </ion-content>
+      <ion-content class="ion-padding" *ngIf="emailModal">
+        <ion-item>
+          <ion-input
+            label="Email"
+            labelPlacement="stacked"
+            type="email"
+            placeholder="micorreo@email.com"
+            [(ngModel)]="email"
+          ></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input
+            label="Asunto (opcional)"
+            labelPlacement="stacked"
+            type="text"
+            placeholder="Asunto"
+            [(ngModel)]="subjectEmail"
+          ></ion-input>
+        </ion-item>  
+        <ion-item>
+          <ion-textarea [(ngModel)]="bodyEmail" maxlength="200" placeholder="Texto para el email"></ion-textarea>
+        </ion-item>  
       </ion-content>
     </ng-template>
   </ion-modal>

@@ -36,6 +36,19 @@ export class Tab1Page {
   phoneModal = false;
   phone = '';
 
+  // WIFI
+  wifiModal = false;
+  wifiSSID = '';
+  wifiSecurity = '';
+  wifiPassword = '';
+  wifiHidden = false;
+
+  // Email
+  emailModal = false;
+  email = '';
+  subjectEmail = '';
+  bodyEmail = '';
+
   constructor(private alertController: AlertController) {}
 
   generarQR(): void {
@@ -103,6 +116,8 @@ export class Tab1Page {
     this.smsModal = false;
     this.urlModal = false;
     this.phoneModal = false;
+    this.wifiModal = false;
+    this.emailModal = false;
   }
 
   setModal(modal: string) {
@@ -121,6 +136,12 @@ export class Tab1Page {
       case 'phone':
         this.phoneModal = true;
         break;
+      case 'wifi':
+        this.wifiModal = true;
+        break;
+      case 'email':
+        this.emailModal = true;
+        break;
     }
   }
 
@@ -130,26 +151,90 @@ export class Tab1Page {
     this.textoQR = ''
   }
 
-  confirmWhatsapp() {
+  async confirmWhatsapp() {
+    if (this.whatsapp.length < 1) {
+      const message = 'El número es requerido';
+      await this.alertFunction(message);
+      return;
+    }
     this.textoQR = `https://wa.me/${this.whatsapp}`
-    this.textoQR += `?text=${encodeURIComponent(this.whatsappMessage)}`
+    if (this.whatsappMessage.length > 0) this.textoQR += `?text=${encodeURIComponent(this.whatsappMessage)}`
     this.modal.dismiss(null, 'confirm');
   }
 
-  confirmSMS() {
+  async confirmSMS() {
+    if (this.sms.length < 1 || this.smsMessage.length < 1) {
+      const message = 'El número y el mensaje son requeridos';
+      await this.alertFunction(message);
+      return;
+    }
     this.textoQR = `SMSTO:${this.sms}`
     this.textoQR += `:${this.smsMessage}`
     this.modal.dismiss(null, 'confirm');
   }
 
-  confirmURL() {
-    this.textoQR = `${this.url}`
+  async confirmURL() {
+    if (this.url.length < 1) {
+      const message = 'La URL es requerida';
+      await this.alertFunction(message);
+      return;
+    }
+    this.textoQR = `${this.url}`;
     this.modal.dismiss(null, 'confirm');
   }
 
-  confirmPhone() {
-    this.textoQR = `tel:${this.phone}`
+  async confirmPhone() {
+    if (this.phone.length < 1) {
+      const message = 'El número es requerido';
+      await this.alertFunction(message);
+      return;
+    }
+    this.textoQR = `tel:${this.phone}`;
     this.modal.dismiss(null, 'confirm');
+  }
+
+  async confirmWifi() {
+    // Alertas
+    if (this.wifiSecurity.length < 1) {
+      const message = 'El tipo de seguridad es requerido';
+      await this.alertFunction(message);
+      return;
+    }
+    if (this.wifiSSID.length < 1) {
+      const message = 'El nombre de red es requerido';
+      await this.alertFunction(message);
+      return;
+    }
+
+    if (this.wifiPassword.length < 1 && this.wifiSecurity !== 'NOPASS') {
+      const message = 'La contraseña es requerida';
+      await this.alertFunction(message);
+      return;
+    }
+    this.textoQR = `WIFI:T:${this.wifiSecurity};S:${this.wifiSSID};P:${this.wifiPassword};H:${this.wifiHidden};`;
+    this.modal.dismiss(null, 'confirm');
+  }
+
+  async confirmEmail() {
+    // Alertas
+    if (this.email.length < 1) {
+      const message = 'El email es requerido';
+      await this.alertFunction(message);
+      return;
+    }
+    this.textoQR = `mailto:${this.email}`;
+    if (this.subjectEmail.length > 0) this.textoQR += `?subject=${encodeURIComponent(this.subjectEmail)}`;
+    if (this.bodyEmail.length > 0) this.textoQR += `&body=${encodeURIComponent(this.bodyEmail)}`; 
+    this.modal.dismiss(null, 'confirm');
+  }
+
+  async alertFunction (message: string) {
+    const alert = await this.alertController.create({
+      header: 'Mensaje',
+      message: message,
+      buttons: ['Entendido']
+    });
+    await alert.present();
   }
 
 }

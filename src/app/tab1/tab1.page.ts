@@ -4,6 +4,7 @@ import { IonModal } from '@ionic/angular';
 import * as QRCode from 'qrcode-generator';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { Share } from '@capacitor/share';
+import { Preferences } from '@capacitor/preferences';
 
 @Component({
   selector: 'app-tab1',
@@ -49,9 +50,12 @@ export class Tab1Page {
   subjectEmail = '';
   bodyEmail = '';
 
+  // Record
+  record_icon = '';
+
   constructor(private alertController: AlertController) {}
 
-  generarQR(): void {
+  async generarQR() {
     if (!this.textoQR.trim()) {
       // Si el input está vacío, no hace nada
       return;
@@ -84,6 +88,7 @@ export class Tab1Page {
   
     // Establecer la fuente de la imagen (esto activará el evento onload)
     img.src = qr.createDataURL(10, 0);
+    await this.saveData(this.record_icon, this.textoQR)
   }
 
   async compartirQR(): Promise<void> {
@@ -159,17 +164,19 @@ export class Tab1Page {
     }
     this.textoQR = `https://wa.me/${this.whatsapp}`
     if (this.whatsappMessage.length > 0) this.textoQR += `?text=${encodeURIComponent(this.whatsappMessage)}`
+    this.record_icon = 'logo-whatsapp';
     this.modal.dismiss(null, 'confirm');
   }
 
   async confirmSMS() {
-    if (this.sms.length < 1 || this.smsMessage.length < 1) {
-      const message = 'El número y el mensaje son requeridos';
+    if (this.sms.length < 1) {
+      const message = 'El número es requerido';
       await this.alertFunction(message);
       return;
     }
-    this.textoQR = `SMSTO:${this.sms}`
-    this.textoQR += `:${this.smsMessage}`
+    this.textoQR = `smsto:${this.sms}`;
+    this.textoQR += `:${this.smsMessage}`;
+    this.record_icon = 'chatbubbles-outline';
     this.modal.dismiss(null, 'confirm');
   }
 
@@ -180,6 +187,7 @@ export class Tab1Page {
       return;
     }
     this.textoQR = `${this.url}`;
+    this.record_icon = 'link';
     this.modal.dismiss(null, 'confirm');
   }
 
@@ -190,6 +198,7 @@ export class Tab1Page {
       return;
     }
     this.textoQR = `tel:${this.phone}`;
+    this.record_icon = 'call-outline';
     this.modal.dismiss(null, 'confirm');
   }
 
@@ -212,6 +221,7 @@ export class Tab1Page {
       return;
     }
     this.textoQR = `WIFI:T:${this.wifiSecurity};S:${this.wifiSSID};P:${this.wifiPassword};H:${this.wifiHidden};`;
+    this.record_icon = 'wifi';
     this.modal.dismiss(null, 'confirm');
   }
 
@@ -225,6 +235,7 @@ export class Tab1Page {
     this.textoQR = `mailto:${this.email}`;
     if (this.subjectEmail.length > 0) this.textoQR += `?subject=${encodeURIComponent(this.subjectEmail)}`;
     if (this.bodyEmail.length > 0) this.textoQR += `&body=${encodeURIComponent(this.bodyEmail)}`; 
+    this.record_icon = 'mail-outline';
     this.modal.dismiss(null, 'confirm');
   }
 
@@ -235,6 +246,24 @@ export class Tab1Page {
       buttons: ['Entendido']
     });
     await alert.present();
+  }
+
+  async saveData (icon: string, data: string) {
+    const { value } = await Preferences.get({ key: 'record' });
+    if (!value) {
+      const toSave = [{icon, data}]
+      await Preferences.set({
+        key: 'record',
+        value: JSON.stringify(toSave)
+      });
+    } else {
+      const toSave = JSON.parse(value)
+      toSave.push({icon, data})
+      await Preferences.set({
+        key: 'record',
+        value: JSON.stringify(toSave)
+      });
+    } 
   }
 
 }

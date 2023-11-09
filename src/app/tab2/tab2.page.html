@@ -16,7 +16,7 @@
   <ion-card *ngFor="let item of data">
     <ion-card-content>
       <ion-list>
-        <ion-item>
+        <ion-item [routerLink]="['/tabs/tab1', { data: item.data }]">
           <ion-icon [name]="item.icon" slot="start"></ion-icon>
           <ion-label>{{ item.data }}</ion-label>
         </ion-item>

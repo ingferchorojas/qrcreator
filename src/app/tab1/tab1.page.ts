@@ -1,4 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { IonModal } from '@ionic/angular';
 import * as QRCode from 'qrcode-generator';
@@ -53,7 +54,14 @@ export class Tab1Page {
   // Record
   record_icon = '';
 
-  constructor(private alertController: AlertController) {}
+  constructor(private alertController: AlertController, private route: ActivatedRoute) {
+    this.route.params.subscribe(params => {
+      if (params['data']) {
+        this.textoQR = params['data'];
+        this.qrImageData = '';
+      }
+    });
+  }
 
   async generarQR() {
     if (!this.textoQR.trim()) {
@@ -123,6 +131,7 @@ export class Tab1Page {
     this.phoneModal = false;
     this.wifiModal = false;
     this.emailModal = false;
+    this.qrImageData = '';
   }
 
   setModal(modal: string) {

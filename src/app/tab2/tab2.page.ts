@@ -19,7 +19,7 @@ export class Tab2Page {
 
   async getData() {
     const { value } = await Preferences.get({ key: 'record' });
-    this.data = value ? JSON.parse(value) : [{
+    this.data = value ? JSON.parse(value).reverse() : [{
       icon: 'information-circle',
       data: 'Historial vacío'
     }];

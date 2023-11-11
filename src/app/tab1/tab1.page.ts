@@ -268,11 +268,15 @@ export class Tab1Page {
       });
     } else {
       const toSave = JSON.parse(value)
-      toSave.push({id: toSave[toSave.length - 1].id + 1, icon, data})
-      await Preferences.set({
-        key: 'record',
-        value: JSON.stringify(toSave)
-      });
+      // Solo guardamos si no hay uno idéntico
+      const find = toSave.find((element: any) => element.data === data)
+      if (!find) {
+        toSave.push({id: toSave[toSave.length - 1].id + 1, icon, data})
+        await Preferences.set({
+          key: 'record',
+          value: JSON.stringify(toSave)
+        });
+      }
     } 
   }
 

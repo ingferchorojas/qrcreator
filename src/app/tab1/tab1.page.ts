@@ -58,6 +58,7 @@ export class Tab1Page {
     this.route.params.subscribe(params => {
       if (params['data']) {
         this.textoQR = params['data'];
+        this.record_icon = params['icon'];
         this.qrImageData = '';
       }
     });
@@ -259,15 +260,15 @@ export class Tab1Page {
 
   async saveData (icon: string, data: string) {
     const { value } = await Preferences.get({ key: 'record' });
-    if (!value) {
-      const toSave = [{icon, data}]
+    if (!value || JSON.parse(value).length < 1) {
+      const toSave = [{id: 1, icon, data}]
       await Preferences.set({
         key: 'record',
         value: JSON.stringify(toSave)
       });
     } else {
       const toSave = JSON.parse(value)
-      toSave.push({icon, data})
+      toSave.push({id: toSave[toSave.length - 1].id + 1, icon, data})
       await Preferences.set({
         key: 'record',
         value: JSON.stringify(toSave)

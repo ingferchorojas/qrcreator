@@ -7,11 +7,26 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Escanear</ion-title>
-    </ion-toolbar>
-  </ion-header>
 
-  <app-explore-container name="Escanear"></app-explore-container>
+  <ion-card *ngFor="let barcode of barcodes" class="custom-center">
+    <ion-card-header>
+      <ion-card-title>{{ getTitleText(barcode.valueType) }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      {{ barcode.rawValue }}
+    </ion-card-content>
+    <ion-button fill="clear" (click)="actionButton(barcode.valueType, barcode.rawValue)">
+      <ion-icon slot="start" name="{{getButtonIcon(barcode.valueType, barcode.rawValue)}}"></ion-icon>
+      {{getButtonText(barcode.valueType, barcode.rawValue)}}
+    </ion-button>
+  </ion-card>
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end" style="margin-bottom: 16px; margin-right: 16px;">
+    <ion-fab-button (click)="scan()" [disabled]="!isSupported">
+      <ion-icon name="scan"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-button (click)="readBarcodeFromImage()" [disabled]="!isSupported" style="margin-top: 8px;">
+      <ion-icon name="image-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

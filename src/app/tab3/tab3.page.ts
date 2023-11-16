@@ -83,8 +83,7 @@ export class Tab3Page implements OnInit {
       this.showProgressBar = false;
       this.barcodes = barcodes
     } catch (error) {
-      console.log(error)
-      this.alertFunction(String(error))
+      console.log(error);
       this.showProgressBar = false;
     }
   }
@@ -106,8 +105,8 @@ export class Tab3Page implements OnInit {
       this.showProgressBar = false;
       this.barcodes = barcodes;
     } catch (error) {
+      console.log(error);
       this.showProgressBar = false;
-      this.alertFunction(String(error))
     }
   }
 
@@ -181,6 +180,10 @@ export class Tab3Page implements OnInit {
       case BarcodeValueType.Product:
         this.showActionButton = false;
         result = `Producto`;
+        break;
+      case BarcodeValueType.Wifi:
+        this.showActionButton = false;
+        result = `Wifi`;
         break;
     }
     return result;

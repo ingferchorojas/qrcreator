@@ -1,5 +1,5 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-title>
       Generar QR
     </ion-title>
@@ -34,17 +34,23 @@
   <div class="custom-input">
     <ion-textarea [(ngModel)]="textoQR" maxlength="250" placeholder="Texto para el QR"></ion-textarea>
   </div>
-  <ion-button expand="full" (click)="generarQR()" [disabled]="!textoQR.trim()">Generar QR</ion-button>
+  <ion-button expand="full" (click)="generarQR()" aria-label="Generar código QR" [disabled]="textoQR.length < 1">
+    <ion-icon name="qr-code-outline" slot="start"></ion-icon>
+    Generar QR
+  </ion-button>
 
   <!-- Mostrar la imagen QR debajo del botón -->
   <div *ngIf="qrImageData" class="qr-container">
     <img [src]="qrImageData" alt="QR Code">
-    <ion-button expand="full" (click)="compartirQR()" aria-label="Compartir código QR">Compartir</ion-button>
+    <ion-button expand="full" (click)="compartirQR()" aria-label="Compartir código QR">
+      <ion-icon name="share-social" slot="start"></ion-icon>
+      Compartir
+    </ion-button>
   </div>
   <ion-modal>
     <ng-template>
       <ion-header>
-        <ion-toolbar>
+        <ion-toolbar color="primary">
           <ion-buttons slot="start">
             <ion-button (click)="closeModal()" (click)="modal.dismiss()">Cancelar</ion-button>
           </ion-buttons>

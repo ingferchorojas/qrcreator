@@ -1,4 +1,13 @@
 .custom-center {
-    text-align: center;
-    margin: auto;
-  }
+  text-align: center;
+  margin: auto;
+  margin-top: 5%;
+}
+
+.center-image {
+  width: 40%;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  margin: auto;
+}

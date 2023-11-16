@@ -1,31 +1,41 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-title>
       Escanear
     </ion-title>
   </ion-toolbar>
+  <ion-progress-bar *ngIf="showProgressBar" type="indeterminate" color="medium"></ion-progress-bar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-
+  <ion-img *ngIf="barcodes.length < 1" class="center-image" src="../../assets/scan.png"></ion-img>
   <ion-card *ngFor="let barcode of barcodes" class="custom-center">
     <ion-card-header>
-      <ion-card-title>{{ getTitleText(barcode.valueType) }}</ion-card-title>
+      <ion-card-title>{{ getTitleText(barcode.valueType,barcode.rawValue) }}</ion-card-title>
+      <ion-card-subtitle>{{ barcode.format === 'QR_CODE' ? 'Código QR' : 'Código de barras' }}</ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
-      {{ barcode.rawValue }}
+      <ion-list>
+        <ion-item>
+          {{ barcode.rawValue }}
+        </ion-item>
+      </ion-list>
     </ion-card-content>
-    <ion-button fill="clear" (click)="actionButton(barcode.valueType, barcode.rawValue)">
+    <ion-button (click)="copyText(barcode.rawValue)">
+      <ion-icon slot="start" name="copy"></ion-icon>
+      Copiar
+    </ion-button>
+    <ion-button *ngIf="showActionButton" (click)="actionButton(barcode.valueType, barcode.rawValue)">
       <ion-icon slot="start" name="{{getButtonIcon(barcode.valueType, barcode.rawValue)}}"></ion-icon>
       {{getButtonText(barcode.valueType, barcode.rawValue)}}
     </ion-button>
   </ion-card>
 
   <ion-fab slot="fixed" vertical="bottom" horizontal="end" style="margin-bottom: 16px; margin-right: 16px;">
-    <ion-fab-button (click)="scan()" [disabled]="!isSupported">
+    <ion-fab-button (click)="scan()" [disabled]="!isSupported || !googleBarcodeScannerAvailable">
       <ion-icon name="scan"></ion-icon>
     </ion-fab-button>
-    <ion-fab-button (click)="readBarcodeFromImage()" [disabled]="!isSupported" style="margin-top: 8px;">
+    <ion-fab-button (click)="readBarcodeFromImage()" [disabled]="!isSupported || !googleBarcodeScannerAvailable" style="margin-top: 8px;">
       <ion-icon name="image-outline"></ion-icon>
     </ion-fab-button>
   </ion-fab>

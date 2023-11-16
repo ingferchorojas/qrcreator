@@ -114,13 +114,7 @@ export class Tab1Page {
         url: filePath.uri,
       });
     } catch (error) {
-      const alert = await this.alertController.create({
-        header: 'Mensaje',
-        message: String(error),
-        buttons: ['Entendido']
-      });
-  
-      await alert.present();
+      console.log(error)
     }
   }
 

@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { AlertController, ToastController } from '@ionic/angular';
 import { IonModal } from '@ionic/angular';
 import * as QRCode from 'qrcode-generator';
 import { Filesystem, Directory } from '@capacitor/filesystem';
@@ -51,10 +51,16 @@ export class Tab1Page {
   subjectEmail = '';
   bodyEmail = '';
 
+  // Social Media
+  socialMediaModal = false;
+  socialMediaUrl = '';
+  socialMediaIcon = '';
+  socialMediaUsername = '';
+
   // Record
   record_icon = '';
 
-  constructor(private alertController: AlertController, private route: ActivatedRoute) {
+  constructor(private alertController: AlertController, private route: ActivatedRoute, private toastController: ToastController) {
     this.route.params.subscribe(params => {
       if (params['data']) {
         this.textoQR = params['data'];
@@ -71,7 +77,7 @@ export class Tab1Page {
     }
   
     // Crear una instancia de QRCode
-    const qr = QRCode(0, 'L');
+    const qr = QRCode(0, 'H');
     qr.addData(this.textoQR);
     qr.make();
   
@@ -82,14 +88,18 @@ export class Tab1Page {
     img.onload = () => {
       // Crear un lienzo (canvas)
       const canvas = document.createElement("canvas");
-      canvas.width = img.width;
-      canvas.height = img.height;
+      canvas.width = img.width + 20;
+      canvas.height = img.height + 20;
   
       // Obtener el contexto 2D del lienzo
       const ctx: any = canvas.getContext("2d");
-  
+      
       // Dibujar la imagen en el lienzo
-      ctx.drawImage(img, 0, 0);
+      const x = (canvas.width - img.width) / 2;
+      const y = (canvas.height - img.height) / 2;
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, x, y);
   
       // Obtener la representación en base64 del lienzo en formato PNG
       this.qrImageData = canvas.toDataURL("image/png");
@@ -102,7 +112,8 @@ export class Tab1Page {
 
   async compartirQR(): Promise<void> {
     try {
-      const imageName = 'qrimage.png'
+      const currentTimeInMilliseconds = new Date().getTime();
+      const imageName = `qr-${currentTimeInMilliseconds}.png`;
       const directory = Directory.Cache
       await Filesystem.writeFile({
         path: imageName,
@@ -118,6 +129,43 @@ export class Tab1Page {
     }
   }
 
+  async guardarQR(): Promise<void> {
+    try {
+      const currentTimeInMilliseconds = new Date().getTime();
+      const imageName = `qr-${currentTimeInMilliseconds}.png`;
+      const permissions = await Filesystem.checkPermissions();
+      if (!permissions.publicStorage) {
+        await Filesystem.requestPermissions()
+      }
+      try {
+        await Filesystem.mkdir({path: 'qrdata', directory: Directory.Documents})
+      } catch (error) {
+        console.log(error)
+      }
+      const directory: any = Directory.Documents;
+      await Filesystem.writeFile({
+        path: `qrdata/${imageName}`,
+        data: this.qrImageData,
+        directory
+      });
+  
+      await Filesystem.getUri({ path: imageName, directory });
+      this.presentToast('bottom', 'Archivo guardado')
+    } catch (error) {
+      console.error('Error al guardar el archivo QR:', error);
+    }
+  }
+
+  async presentToast(position: 'top' | 'middle' | 'bottom', message: string) {
+    const toast = await this.toastController.create({
+      message,
+      duration: 1500,
+      position: position,
+    });
+
+    await toast.present();
+  }
+
   openModal () {
     this.modal.present();
     this.whatsappModal = false;
@@ -126,6 +174,8 @@ export class Tab1Page {
     this.phoneModal = false;
     this.wifiModal = false;
     this.emailModal = false;
+    this.socialMediaModal = false;
+    this.socialMediaUsername = '';
     this.qrImageData = '';
   }
 
@@ -150,6 +200,31 @@ export class Tab1Page {
         break;
       case 'email':
         this.emailModal = true;
+        break;
+      case 'instagram':
+        this.socialMediaModal = true;
+        this.socialMediaUrl = 'https://www.instagram.com/';
+        this.socialMediaIcon = 'logo-instagram';
+        break;
+      case 'facebook':
+        this.socialMediaModal = true;
+        this.socialMediaUrl = 'https://www.facebook.com/';
+        this.socialMediaIcon = 'logo-facebook';
+        break;
+      case 'linkedin':
+        this.socialMediaModal = true;
+        this.socialMediaUrl = 'https://www.linkedin.com/in/';
+        this.socialMediaIcon = 'logo-linkedin';
+        break;
+      case 'twitter':
+        this.socialMediaModal = true;
+        this.socialMediaUrl = 'https://twitter.com/';
+        this.socialMediaIcon = 'logo-twitter';
+        break;
+      case 'youtube':
+        this.socialMediaModal = true;
+        this.socialMediaUrl = 'https://www.youtube.com/';
+        this.socialMediaIcon = 'logo-youtube';
         break;
     }
   }
@@ -240,6 +315,13 @@ export class Tab1Page {
     if (this.subjectEmail.length > 0) this.textoQR += `?subject=${encodeURIComponent(this.subjectEmail)}`;
     if (this.bodyEmail.length > 0) this.textoQR += `&body=${encodeURIComponent(this.bodyEmail)}`; 
     this.record_icon = 'mail-outline';
+    this.modal.dismiss(null, 'confirm');
+  }
+
+  async confirmSocialMedia() {
+    this.socialMediaUrl += this.socialMediaUsername;
+    this.textoQR = this.socialMediaUrl;
+    this.record_icon = this.socialMediaIcon;
     this.modal.dismiss(null, 'confirm');
   }
 

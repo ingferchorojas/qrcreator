@@ -32,10 +32,10 @@
   </ion-card>
 
   <ion-fab slot="fixed" vertical="bottom" horizontal="end" style="margin-bottom: 16px; margin-right: 16px;">
-    <ion-fab-button (click)="scan()" [disabled]="!isSupported && !googleBarcodeScannerAvailable">
+    <ion-fab-button (click)="scan()" [disabled]="!isSupported">
       <ion-icon name="scan"></ion-icon>
     </ion-fab-button>
-    <ion-fab-button (click)="readBarcodeFromImage()" [disabled]="!isSupported && !googleBarcodeScannerAvailable" style="margin-top: 8px;">
+    <ion-fab-button (click)="readBarcodeFromImage()" [disabled]="!isSupported" style="margin-top: 8px;">
       <ion-icon name="image-outline"></ion-icon>
     </ion-fab-button>
   </ion-fab>

@@ -30,7 +30,7 @@ export class Tab3Page implements OnInit {
         BarcodeScanner.installGoogleBarcodeScannerModule().then(() => {
           this.showProgressBar = false;
           this.googleBarcodeScannerAvailable = true;
-        }).catch((e) => {
+        }).catch(() => {
           this.showProgressBar = false;
           this.googleBarcodeScannerAvailable = false;
           this.alertFunction('Error al instalar el módulo necesario para escanear códigos')
@@ -135,10 +135,28 @@ export class Tab3Page implements OnInit {
         result = `Mandar Email`;
         break;
       case BarcodeValueType.Phone:
-        result = `Hacer Llamada`
+        result = `Hacer Llamada`;
         break;
       case BarcodeValueType.Url:
-        result = value.includes('wa.me') || value.includes('whatsapp') ? `Mandar un WhatsApp` : `Visitar sitio web`
+        result = `Visitar sitio web`
+        if (value.includes('wa.me') || value.includes('whatsapp')) {
+          result = `Mandar un WhatsApp`;
+        }
+        if (value.includes('youtube')) {
+          result = `Ir a Youtube`;
+        }
+        if (value.includes('facebook')) {
+          result = `Ir a Facebook`;
+        }
+        if (value.includes('instagram')) {
+          result = `Ir a Instagram`;
+        }
+        if (value.includes('linkedin')) {
+          result = `Ir a LinkedIn`;
+        }
+        if (value.includes('twitter') || value.includes('x.com')) {
+          result = `Ir a Twitter`;
+        }
         break;
     }
     return result;
@@ -154,10 +172,28 @@ export class Tab3Page implements OnInit {
         result = `mail-outline`;
         break;
       case BarcodeValueType.Phone:
-        result = `call-outline`
+        result = `call-outline`;
         break;
       case BarcodeValueType.Url:
-        result = value.includes('wa.me') || value.includes('whatsapp') ? `logo-whatsapp` : `link`
+        result = `link`;
+        if (value.includes('wa.me') || value.includes('whatsapp')) {
+          result = `logo-whatsapp`;
+        }
+        if (value.includes('youtube')) {
+          result = `logo-youtube`;
+        }
+        if (value.includes('facebook')) {
+          result = `logo-facebook`;
+        }
+        if (value.includes('instagram')) {
+          result = `logo-instagram`;
+        }
+        if (value.includes('linkedin')) {
+          result = `logo-linkedin`;
+        }
+        if (value.includes('twitter') || value.includes('x.com')) {
+          result = `logo-twitter`;
+        }
         break;
     }
     return result;

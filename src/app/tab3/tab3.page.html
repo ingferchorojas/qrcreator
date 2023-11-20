@@ -15,9 +15,15 @@
       <ion-card-subtitle>{{ barcode.format === 'QR_CODE' ? 'Código QR' : 'Código de barras' }}</ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
-      <ion-list>
-        <ion-item>
-          {{ barcode.rawValue }}
+      <p>{{ barcode.rawValue }}</p>
+      <ion-list *ngIf="wifiData && wifiData.length > 0">
+        <ion-item *ngFor="let data of wifiData">
+          <ion-icon aria-hidden="true" name="{{ data.icon }}" slot="start"></ion-icon>
+          <ion-label>{{ data.value }}</ion-label>
+          <ion-button (click)="copyText(data.value)" *ngIf="data.showCopy">
+            <ion-icon slot="start" name="copy"></ion-icon>
+            Copiar
+          </ion-button>
         </ion-item>
       </ion-list>
     </ion-card-content>
@@ -30,7 +36,6 @@
       {{getButtonText(barcode.valueType, barcode.rawValue)}}
     </ion-button>
   </ion-card>
-
   <ion-fab slot="fixed" vertical="bottom" horizontal="end" style="margin-bottom: 16px; margin-right: 16px;">
     <ion-fab-button (click)="scan()" [disabled]="!isSupported">
       <ion-icon name="scan"></ion-icon>

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController, ToastController } from '@ionic/angular';
 import { Barcode, BarcodeScanner, BarcodeFormat, BarcodeValueType } from '@capacitor-mlkit/barcode-scanning';
+import { NativeSettings, AndroidSettings } from 'capacitor-native-settings';
+
 import { FilePicker } from '@capawesome/capacitor-file-picker';
 
 @Component({
@@ -14,7 +16,45 @@ export class Tab3Page implements OnInit {
   showActionButton = false;
   showProgressBar = false;
   googleBarcodeScannerAvailable = false;
-  barcodes: Barcode[] = [/*{displayValue: 'Capacitorjs', format: BarcodeFormat.QrCode, rawValue: 'Hola Mundo', valueType: BarcodeValueType.Text}*/];
+  barcodes: Barcode[] = [
+    /*{
+      displayValue: 'Capacitorjs', 
+      format: BarcodeFormat.QrCode, 
+      rawValue: 'Última Hora es un periódico matutino de Paraguay, cuya sede de edición se encuentra en la ciudad de Asunción. Su fundación tuvo lugar el 8 de octubre de 1973, en pleno período stronista, bajo la dirección de Isaac Kostianovsky. En sus primeros años, se caracterizó por su formato vespertino.', 
+      valueType: BarcodeValueType.Text
+    },
+    {
+      displayValue: 'Capacitorjs',
+      format: BarcodeFormat.QrCode,
+      rawValue: 'https://www.ultimahora.com/',
+      valueType: BarcodeValueType.Url
+    },
+    {
+      displayValue: 'Capacitorjs',
+      format: BarcodeFormat.QrCode,
+      rawValue: 'WIFI:T:WPA;S:Rojas y Asociados;P:RojasyRojas;H:true;',
+      valueType: BarcodeValueType.Wifi
+    }*/
+  ];
+
+  wifiData: any = [
+    /*
+    {
+      icon: 'globe-outline',
+      value: 'Rojas y Asociados',
+      showCopy: true
+    },
+    {
+      icon: 'finger-print-outline',
+      value: 'RojasyRojas',
+      showCopy: true
+    },
+    {
+      icon: 'eye-off-outline',
+      value: 'Oculto',
+      showCopy: false
+    }*/
+  ];
 
   constructor(private alertController: AlertController, private toastController: ToastController) {}
 
@@ -51,6 +91,55 @@ export class Tab3Page implements OnInit {
       // Abrir con el navegador el value
       window.open(value, '_blank');
     } 
+
+    if (type === BarcodeValueType.Wifi) {
+      NativeSettings.openAndroid({
+        option: AndroidSettings.Wifi
+      })
+    }
+  }
+
+  async wifiFunction(value: string){
+    this.wifiData = [];
+    value = value.replace('WIFI:','');
+    value = value.replace('wifi:','');
+    const wifi = value.split(';');
+    for (const element of wifi) {
+      const type = element && element.length > 0 ? element.split(':') : []
+      if (type && type.length > 0 && type[0].toLowerCase() === 's') {
+        const obj = {
+          icon: 'wifi-outline',
+          value: type[1],
+          showCopy: true
+        };
+        if (!this.wifiData.includes(obj)) this.wifiData.push(obj);
+      }
+      if (type && type.length > 0 && type[0].toLowerCase() === 'p') {
+        const obj = {
+          icon: 'ellipsis-horizontal-sharp',
+          value: type[1],
+          showCopy: true
+        };
+        if (!this.wifiData.includes(obj)) this.wifiData.push(obj);
+      }
+      if (type && type.length > 0 && type[0].toLowerCase() === 't') {
+        const obj = {
+          icon: 'bag-outline',
+          value: type[1],
+          showCopy: false
+        };
+        if (!this.wifiData.includes(obj)) this.wifiData.push(obj);
+      }
+      if (type && type.length > 0 && type[0].toLowerCase() === 'h') {
+        const isHidden = type[1]
+        const obj = {
+          icon: isHidden === 'false' ? 'eye-outline' : 'eye-off-outline',
+          value:isHidden === 'false' ? 'Visible' : 'Oculto',
+          showCopy: false
+        };
+        if (!this.wifiData.includes(obj)) this.wifiData.push(obj);
+      }
+    }
   }
 
   async copyText(value: string) {
@@ -64,7 +153,7 @@ export class Tab3Page implements OnInit {
       
       document.body.removeChild(dummyElement);
   
-      await this.presentToast('middle');
+      await this.presentToast('top');
     } catch (err) {
       console.error(err);
     }
@@ -82,6 +171,7 @@ export class Tab3Page implements OnInit {
       const { barcodes } = await BarcodeScanner.scan();
       this.showProgressBar = false;
       this.barcodes = barcodes
+      if (barcodes[0].valueType === BarcodeValueType.Wifi) this.wifiFunction(barcodes[0].rawValue);
     } catch (error) {
       console.log(error);
       this.showProgressBar = false;
@@ -104,6 +194,7 @@ export class Tab3Page implements OnInit {
       }
       this.showProgressBar = false;
       this.barcodes = barcodes;
+      if (barcodes[0].valueType === BarcodeValueType.Wifi) this.wifiFunction(barcodes[0].rawValue);
     } catch (error) {
       console.log(error);
       this.showProgressBar = false;
@@ -136,6 +227,9 @@ export class Tab3Page implements OnInit {
         break;
       case BarcodeValueType.Phone:
         result = `Hacer Llamada`;
+        break;
+      case BarcodeValueType.Wifi:
+        result = `Configurar WiFi`;
         break;
       case BarcodeValueType.Url:
         result = `Visitar sitio web`
@@ -173,6 +267,9 @@ export class Tab3Page implements OnInit {
         break;
       case BarcodeValueType.Phone:
         result = `call-outline`;
+        break;
+      case BarcodeValueType.Wifi:
+        result = `wifi-outline`;
         break;
       case BarcodeValueType.Url:
         result = `link`;
@@ -218,7 +315,6 @@ export class Tab3Page implements OnInit {
         result = `Producto`;
         break;
       case BarcodeValueType.Wifi:
-        this.showActionButton = false;
         result = `Wifi`;
         break;
     }

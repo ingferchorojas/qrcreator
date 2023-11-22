@@ -11,11 +11,11 @@
   <ion-img *ngIf="barcodes.length < 1" class="center-image" src="../../assets/scan.png"></ion-img>
   <ion-card *ngFor="let barcode of barcodes" class="custom-center">
     <ion-card-header>
-      <ion-card-title>{{ getTitleText(barcode.valueType,barcode.rawValue) }}</ion-card-title>
+      <ion-card-title>{{ getTitleText(barcode.valueType,barcode.displayValue) }}</ion-card-title>
       <ion-card-subtitle>{{ barcode.format === 'QR_CODE' ? 'Código QR' : 'Código de barras' }}</ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
-      <p>{{ barcode.rawValue }}</p>
+      <p>{{ barcode.displayValue }}</p>
       <ion-list *ngIf="wifiData && wifiData.length > 0">
         <ion-item *ngFor="let data of wifiData">
           <ion-icon aria-hidden="true" name="{{ data.icon }}" slot="start"></ion-icon>
@@ -27,13 +27,13 @@
         </ion-item>
       </ion-list>
     </ion-card-content>
-    <ion-button (click)="copyText(barcode.rawValue)">
+    <ion-button (click)="copyText(barcode.displayValue)">
       <ion-icon slot="start" name="copy"></ion-icon>
       Copiar
     </ion-button>
-    <ion-button *ngIf="showActionButton" (click)="actionButton(barcode.valueType, barcode.rawValue)">
-      <ion-icon slot="start" name="{{getButtonIcon(barcode.valueType, barcode.rawValue)}}"></ion-icon>
-      {{getButtonText(barcode.valueType, barcode.rawValue)}}
+    <ion-button *ngIf="showActionButton" (click)="actionButton(barcode.valueType, barcode.displayValue)">
+      <ion-icon slot="start" name="{{getButtonIcon(barcode.valueType, barcode.displayValue)}}"></ion-icon>
+      {{getButtonText(barcode.valueType, barcode.displayValue)}}
     </ion-button>
   </ion-card>
   <ion-fab slot="fixed" vertical="bottom" horizontal="end" style="margin-bottom: 16px; margin-right: 16px;">

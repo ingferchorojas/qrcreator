@@ -1,19 +1,22 @@
-ion-button {
-    text-transform: none !important;
-    margin-top: 1rem;
+ion-chip {
+  width: calc(33.33% - 1rem);
+  margin-right: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .qr-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-top: 16px; /* Ajusta según tus necesidades */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 16px;
 }
 
 .qr-container img {
-    width: 100%;
-    max-width: 200px; /* Ajusta según tus necesidades */
-    height: auto;
-    margin-top: 2rem; /* Ajusta según tus necesidades */
+  width: 100%;
+  max-width: 200px;
+  height: auto;
+  margin-top: 2rem;
 }

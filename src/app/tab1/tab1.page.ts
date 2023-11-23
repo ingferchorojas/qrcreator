@@ -345,7 +345,8 @@ export class Tab1Page {
       await this.alertFunction(message);
       return;
     }
-    this.textoQR = `MECARD:N:${this.contactName};ORG:Hanoi;ADR:${this.contactAddress};TEL:${this.contactPhone};EMAIL:${this.contactEmail};NOTE:${this.contactNotes};`
+    this.textoQR = `MECARD:N:${this.contactName.trim()};ORG:${this.contactOrganization};ADR:${this.contactAddress.trim()};TEL:${this.contactPhone.trim()};EMAIL:${this.contactEmail.trim()};NOTE:${this.contactNotes.trim()};`
+    this.record_icon = 'person-add-outline';
     this.modal.dismiss(null, 'confirm');
   }
 

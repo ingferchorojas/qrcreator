@@ -57,6 +57,15 @@ export class Tab1Page {
   socialMediaIcon = '';
   socialMediaUsername = '';
 
+  // Contacto
+  contactModal = false;
+  contactName = '';
+  contactOrganization = '';
+  contactAddress = '';
+  contactPhone = '';
+  contactEmail = '';
+  contactNotes = '';
+
   // Record
   record_icon = '';
 
@@ -175,6 +184,7 @@ export class Tab1Page {
     this.wifiModal = false;
     this.emailModal = false;
     this.socialMediaModal = false;
+    this.contactModal = false;
     this.socialMediaUsername = '';
     this.qrImageData = '';
   }
@@ -200,6 +210,9 @@ export class Tab1Page {
         break;
       case 'email':
         this.emailModal = true;
+        break;
+      case 'contact':
+        this.contactModal = true;
         break;
       case 'instagram':
         this.socialMediaModal = true;
@@ -322,6 +335,17 @@ export class Tab1Page {
     this.socialMediaUrl += this.socialMediaUsername;
     this.textoQR = this.socialMediaUrl;
     this.record_icon = this.socialMediaIcon;
+    this.modal.dismiss(null, 'confirm');
+  }
+
+  async confirmContact() {
+    // Alertas
+    if (this.contactName.length < 1) {
+      const message = 'El nombre es requerido';
+      await this.alertFunction(message);
+      return;
+    }
+    this.textoQR = `MECARD:N:${this.contactName};ORG:Hanoi;ADR:${this.contactAddress};TEL:${this.contactPhone};EMAIL:${this.contactEmail};NOTE:${this.contactNotes};`
     this.modal.dismiss(null, 'confirm');
   }
 

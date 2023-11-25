@@ -56,7 +56,7 @@
     <ion-label>Email</ion-label>
   </ion-chip>
   <div class="custom-input">
-    <ion-textarea [(ngModel)]="textoQR" maxlength="250" placeholder="Texto para el QR"></ion-textarea>
+    <ion-textarea [(ngModel)]="textoQR" maxlength="350" placeholder="Texto para el QR" rows="3"></ion-textarea>
   </div>
   <ion-button expand="full" (click)="generarQR()" aria-label="Generar código QR" [disabled]="textoQR.length < 1">
     <ion-icon name="qr-code-outline" slot="start"></ion-icon>
@@ -185,8 +185,7 @@
           ></ion-input>
         </ion-item>  
         <ion-item>
-          <ion-label>¿Oculto?</ion-label>
-          <ion-checkbox [(ngModel)]="wifiHidden"></ion-checkbox>
+          <ion-checkbox [(ngModel)]="wifiHidden">Oculto?</ion-checkbox>
         </ion-item>           
       </ion-content>
       <ion-content class="ion-padding" *ngIf="emailModal">

@@ -153,7 +153,7 @@ export class Tab3Page implements OnInit {
       
       document.body.removeChild(dummyElement);
   
-      await this.presentToast('top');
+      await this.presentToast('bottom');
     } catch (err) {
       console.error(err);
     }
@@ -171,7 +171,11 @@ export class Tab3Page implements OnInit {
       const { barcodes } = await BarcodeScanner.scan();
       this.showProgressBar = false;
       this.barcodes = barcodes
-      if (barcodes[0].valueType === BarcodeValueType.Wifi) this.wifiFunction(barcodes[0].rawValue);
+      if (barcodes[0].valueType === BarcodeValueType.Wifi) {
+        this.wifiFunction(barcodes[0].rawValue);
+      } else {
+        this.wifiData = [];
+      }
     } catch (error) {
       console.log(error);
       this.showProgressBar = false;
@@ -194,7 +198,11 @@ export class Tab3Page implements OnInit {
       }
       this.showProgressBar = false;
       this.barcodes = barcodes;
-      if (barcodes[0].valueType === BarcodeValueType.Wifi) this.wifiFunction(barcodes[0].rawValue);
+      if (barcodes[0].valueType === BarcodeValueType.Wifi) {
+        this.wifiFunction(barcodes[0].rawValue);
+      } else {
+        this.wifiData = [];
+      }
     } catch (error) {
       console.log(error);
       this.showProgressBar = false;

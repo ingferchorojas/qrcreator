@@ -6,6 +6,7 @@ import * as QRCode from 'qrcode-generator';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { Share } from '@capacitor/share';
 import { Preferences } from '@capacitor/preferences';
+import { App } from '@capacitor/app'
 
 @Component({
   selector: 'app-tab1',
@@ -15,6 +16,9 @@ import { Preferences } from '@capacitor/preferences';
 export class Tab1Page {
 
   @ViewChild(IonModal) modal!: IonModal;
+
+  // Modal
+  modalIsOpen = true;
 
   // QR
   textoQR: string = '';
@@ -77,8 +81,19 @@ export class Tab1Page {
         this.qrImageData = '';
       }
     });
+    App.addListener('backButton', data => {
+      if (this.modalIsOpen) {
+        this.modalIsOpen = false;
+        data.canGoBack = true;
+      }
+      if (data.canGoBack) {
+        window.history.back();
+      } else {
+        App.minimizeApp();
+      }
+    })
   }
-
+  
   async generarQR() {
     if (!this.textoQR.trim()) {
       // Si el input está vacío, no hace nada
@@ -190,6 +205,7 @@ export class Tab1Page {
   }
 
   setModal(modal: string) {
+    this.modalIsOpen = true;
     this.openModal();
     switch (modal) {
       case 'whatsapp':
@@ -312,7 +328,7 @@ export class Tab1Page {
       await this.alertFunction(message);
       return;
     }
-    this.textoQR = `WIFI:T:${this.wifiSecurity};S:${this.wifiSSID};P:${this.wifiPassword};H:${this.wifiHidden};`;
+    this.textoQR = `WIFI:T:${this.wifiSecurity};S:${this.wifiSSID.trim()};P:${this.wifiPassword.trim()};H:${this.wifiHidden};`;
     this.record_icon = 'wifi';
     this.modal.dismiss(null, 'confirm');
   }
@@ -325,7 +341,7 @@ export class Tab1Page {
       return;
     }
     this.textoQR = `mailto:${this.email}`;
-    if (this.subjectEmail.length > 0) this.textoQR += `?subject=${encodeURIComponent(this.subjectEmail)}`;
+    if (this.subjectEmail.length > 0) this.textoQR += `?subject=${encodeURIComponent(this.subjectEmail.trim())}`;
     if (this.bodyEmail.length > 0) this.textoQR += `&body=${encodeURIComponent(this.bodyEmail)}`; 
     this.record_icon = 'mail-outline';
     this.modal.dismiss(null, 'confirm');

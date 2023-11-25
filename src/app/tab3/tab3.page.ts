@@ -35,13 +35,13 @@ export class Tab3Page implements OnInit {
       format: BarcodeFormat.QrCode,
       rawValue: 'WIFI:T:WPA;S:Rojas y Asociados;P:RojasyRojas;H:true;',
       valueType: BarcodeValueType.Wifi
-    },*/
+    },
     {
       displayValue: 'Capacitorjs',
       format: BarcodeFormat.QrCode,
       rawValue: 'MECARD:N:Fernando Rojas;ORG:Hanoi S.A;ADR:Coronel Oviedo;TEL:0971422641;EMAIL:fernandorojasmosqueira@gmail.com;NOTE:Una nota;',
       valueType: BarcodeValueType.ContactInfo
-    }
+    }*/
   ];
 
   specialData: any = [
@@ -105,7 +105,7 @@ export class Tab3Page implements OnInit {
         value = `smsto:${aux[1]}?body=${encodeURIComponent(aux[2])}`;
       }
     }
-    
+
     if (browserTypes.includes(type)) {
       // Abrir con el navegador el value
       window.open(value, '_blank');
@@ -125,7 +125,7 @@ export class Tab3Page implements OnInit {
     const wifi = value.split(';');
     for (const element of wifi) {
       const type = element && element.length > 0 ? element.split(':') : []
-      if (type && type.length > 0 && type[0].toLowerCase() === 's') {
+      if (type && type.length > 0 && type[0].toLowerCase() === 's' && type[1].length > 0) {
         const obj = {
           icon: 'wifi-outline',
           value: type[1],
@@ -133,7 +133,7 @@ export class Tab3Page implements OnInit {
         };
         if (!this.specialData.includes(obj)) this.specialData.push(obj);
       }
-      if (type && type.length > 0 && type[0].toLowerCase() === 'p') {
+      if (type && type.length > 0 && type[0].toLowerCase() === 'p' && type[1].length > 0) {
         const obj = {
           icon: 'ellipsis-horizontal-sharp',
           value: type[1],
@@ -141,7 +141,7 @@ export class Tab3Page implements OnInit {
         };
         if (!this.specialData.includes(obj)) this.specialData.push(obj);
       }
-      if (type && type.length > 0 && type[0].toLowerCase() === 't') {
+      if (type && type.length > 0 && type[0].toLowerCase() === 't' && type[1].length > 0) {
         const obj = {
           icon: 'bag-outline',
           value: type[1],
@@ -149,7 +149,7 @@ export class Tab3Page implements OnInit {
         };
         if (!this.specialData.includes(obj)) this.specialData.push(obj);
       }
-      if (type && type.length > 0 && type[0].toLowerCase() === 'h') {
+      if (type && type.length > 0 && type[0].toLowerCase() === 'h' && type[1].length > 0) {
         const isHidden = type[1]
         const obj = {
           icon: isHidden === 'false' ? 'eye-outline' : 'eye-off-outline',
@@ -168,7 +168,7 @@ export class Tab3Page implements OnInit {
     const wifi = value.split(';');
     for (const element of wifi) {
       const type = element && element.length > 0 ? element.split(':') : []
-      if (type && type.length > 0 && type[0].toLowerCase() === 'n') {
+      if (type && type.length > 0 && type[0].toLowerCase() === 'n' && type[1].length > 0) {
         const obj = {
           icon: 'person-circle-outline',
           value: type[1],
@@ -176,7 +176,7 @@ export class Tab3Page implements OnInit {
         };
         if (!this.specialData.includes(obj)) this.specialData.push(obj);
       }
-      if (type && type.length > 0 && type[0].toLowerCase() === 'org') {
+      if (type && type.length > 0 && type[0].toLowerCase() === 'org' && type[1].length > 0) {
         const obj = {
           icon: 'business-outline',
           value: type[1],
@@ -184,7 +184,7 @@ export class Tab3Page implements OnInit {
         };
         if (!this.specialData.includes(obj)) this.specialData.push(obj);
       }
-      if (type && type.length > 0 && type[0].toLowerCase() === 'adr') {
+      if (type && type.length > 0 && type[0].toLowerCase() === 'adr' && type[1].length > 0) {
         const obj = {
           icon: 'return-up-forward-outline',
           value: type[1],
@@ -192,7 +192,7 @@ export class Tab3Page implements OnInit {
         };
         if (!this.specialData.includes(obj)) this.specialData.push(obj);
       }
-      if (type && type.length > 0 && type[0].toLowerCase() === 'tel') {
+      if (type && type.length > 0 && type[0].toLowerCase() === 'tel' && type[1].length > 0) {
         const obj = {
           icon: 'call-outline',
           value: type[1],
@@ -200,7 +200,7 @@ export class Tab3Page implements OnInit {
         };
         if (!this.specialData.includes(obj)) this.specialData.push(obj);
       }
-      if (type && type.length > 0 && type[0].toLowerCase() === 'email') {
+      if (type && type.length > 0 && type[0].toLowerCase() === 'email' && type[1].length > 0) {
         const obj = {
           icon: 'at-circle-outline',
           value: type[1],
@@ -208,7 +208,7 @@ export class Tab3Page implements OnInit {
         };
         if (!this.specialData.includes(obj)) this.specialData.push(obj);
       }
-      if (type && type.length > 0 && type[0].toLowerCase() === 'note') {
+      if (type && type.length > 0 && type[0].toLowerCase() === 'note' && type[1].length > 0) {
         const obj = {
           icon: 'document-outline',
           value: type[1],
@@ -316,9 +316,6 @@ export class Tab3Page implements OnInit {
       case BarcodeValueType.Sms:
         result = `Mandar SMS`;
         break;
-      case BarcodeValueType.ContactInfo:
-        result = `Agregar contacto`;
-        break;
       case BarcodeValueType.Email:
         result = `Mandar Email`;
         break;
@@ -360,9 +357,6 @@ export class Tab3Page implements OnInit {
     switch (type) {
       case BarcodeValueType.Sms:
         result = `chatbubbles-outline`;
-        break;
-      case BarcodeValueType.ContactInfo:
-        result = `person-add-outline`;
         break;
       case BarcodeValueType.Email:
         result = `mail-outline`;
@@ -409,6 +403,7 @@ export class Tab3Page implements OnInit {
         result = `Texto`;
         break;
       case BarcodeValueType.ContactInfo:
+        this.showActionButton = false;
         result = `Contacto`;
         break;
       case BarcodeValueType.Phone:
@@ -431,7 +426,7 @@ export class Tab3Page implements OnInit {
   async presentToast(position: 'top' | 'middle' | 'bottom') {
     const toast = await this.toastController.create({
       message: '¡Texto copiado!',
-      duration: 1500,
+      duration: 900,
       position: position,
     });
 

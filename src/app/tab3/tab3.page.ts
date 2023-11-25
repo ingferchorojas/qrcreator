@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { AlertController, ToastController } from '@ionic/angular';
 import { Barcode, BarcodeScanner, BarcodeFormat, BarcodeValueType } from '@capacitor-mlkit/barcode-scanning';
 import { NativeSettings, AndroidSettings } from 'capacitor-native-settings';
-
 import { FilePicker } from '@capawesome/capacitor-file-picker';
+
 
 @Component({
   selector: 'app-tab3',
@@ -16,6 +16,7 @@ export class Tab3Page implements OnInit {
   showActionButton = false;
   showProgressBar = false;
   googleBarcodeScannerAvailable = false;
+  barcodeValue = '';
   barcodes: Barcode[] = [
     /*{
       displayValue: 'Capacitorjs', 
@@ -34,10 +35,16 @@ export class Tab3Page implements OnInit {
       format: BarcodeFormat.QrCode,
       rawValue: 'WIFI:T:WPA;S:Rojas y Asociados;P:RojasyRojas;H:true;',
       valueType: BarcodeValueType.Wifi
-    }*/
+    },*/
+    {
+      displayValue: 'Capacitorjs',
+      format: BarcodeFormat.QrCode,
+      rawValue: 'MECARD:N:Fernando Rojas;ORG:Hanoi S.A;ADR:Coronel Oviedo;TEL:0971422641;EMAIL:fernandorojasmosqueira@gmail.com;NOTE:Una nota;',
+      valueType: BarcodeValueType.ContactInfo
+    }
   ];
 
-  wifiData: any = [
+  specialData: any = [
     /*
     {
       icon: 'globe-outline',
@@ -80,13 +87,25 @@ export class Tab3Page implements OnInit {
   }
 
   async actionButton(type: BarcodeValueType, value: string) {
+
     const browserTypes = [
       BarcodeValueType.Sms,
       BarcodeValueType.Phone,
       BarcodeValueType.Email,
       BarcodeValueType.Url
     ];
-  
+
+    if (type === BarcodeValueType.Sms && !value.includes('?body=')) {
+      let aux: any
+      if (!value.includes(':')) {
+        aux = value.replace(/\s+/g, ' ').split(' ');
+        value = `smsto:${aux[0]}?body=${aux.slice(1).join(' ')}`;
+      } else if (value.includes(':')) {
+        aux = value.split(':');
+        value = `smsto:${aux[1]}?body=${encodeURIComponent(aux[2])}`;
+      }
+    }
+    
     if (browserTypes.includes(type)) {
       // Abrir con el navegador el value
       window.open(value, '_blank');
@@ -100,7 +119,7 @@ export class Tab3Page implements OnInit {
   }
 
   async wifiFunction(value: string){
-    this.wifiData = [];
+    this.specialData = [];
     value = value.replace('WIFI:','');
     value = value.replace('wifi:','');
     const wifi = value.split(';');
@@ -112,7 +131,7 @@ export class Tab3Page implements OnInit {
           value: type[1],
           showCopy: true
         };
-        if (!this.wifiData.includes(obj)) this.wifiData.push(obj);
+        if (!this.specialData.includes(obj)) this.specialData.push(obj);
       }
       if (type && type.length > 0 && type[0].toLowerCase() === 'p') {
         const obj = {
@@ -120,7 +139,7 @@ export class Tab3Page implements OnInit {
           value: type[1],
           showCopy: true
         };
-        if (!this.wifiData.includes(obj)) this.wifiData.push(obj);
+        if (!this.specialData.includes(obj)) this.specialData.push(obj);
       }
       if (type && type.length > 0 && type[0].toLowerCase() === 't') {
         const obj = {
@@ -128,7 +147,7 @@ export class Tab3Page implements OnInit {
           value: type[1],
           showCopy: false
         };
-        if (!this.wifiData.includes(obj)) this.wifiData.push(obj);
+        if (!this.specialData.includes(obj)) this.specialData.push(obj);
       }
       if (type && type.length > 0 && type[0].toLowerCase() === 'h') {
         const isHidden = type[1]
@@ -137,7 +156,65 @@ export class Tab3Page implements OnInit {
           value:isHidden === 'false' ? 'Visible' : 'Oculto',
           showCopy: false
         };
-        if (!this.wifiData.includes(obj)) this.wifiData.push(obj);
+        if (!this.specialData.includes(obj)) this.specialData.push(obj);
+      }
+    }
+  }
+
+  async contactFunction(value: string){
+    this.specialData = [];
+    value = value.replace('MECARD:','');
+    value = value.replace('mecard:','');
+    const wifi = value.split(';');
+    for (const element of wifi) {
+      const type = element && element.length > 0 ? element.split(':') : []
+      if (type && type.length > 0 && type[0].toLowerCase() === 'n') {
+        const obj = {
+          icon: 'person-circle-outline',
+          value: type[1],
+          showCopy: true
+        };
+        if (!this.specialData.includes(obj)) this.specialData.push(obj);
+      }
+      if (type && type.length > 0 && type[0].toLowerCase() === 'org') {
+        const obj = {
+          icon: 'business-outline',
+          value: type[1],
+          showCopy: true
+        };
+        if (!this.specialData.includes(obj)) this.specialData.push(obj);
+      }
+      if (type && type.length > 0 && type[0].toLowerCase() === 'adr') {
+        const obj = {
+          icon: 'return-up-forward-outline',
+          value: type[1],
+          showCopy: true
+        };
+        if (!this.specialData.includes(obj)) this.specialData.push(obj);
+      }
+      if (type && type.length > 0 && type[0].toLowerCase() === 'tel') {
+        const obj = {
+          icon: 'call-outline',
+          value: type[1],
+          showCopy: true
+        };
+        if (!this.specialData.includes(obj)) this.specialData.push(obj);
+      }
+      if (type && type.length > 0 && type[0].toLowerCase() === 'email') {
+        const obj = {
+          icon: 'at-circle-outline',
+          value: type[1],
+          showCopy: true
+        };
+        if (!this.specialData.includes(obj)) this.specialData.push(obj);
+      }
+      if (type && type.length > 0 && type[0].toLowerCase() === 'note') {
+        const obj = {
+          icon: 'document-outline',
+          value: type[1],
+          showCopy: true
+        };
+        if (!this.specialData.includes(obj)) this.specialData.push(obj);
       }
     }
   }
@@ -174,7 +251,12 @@ export class Tab3Page implements OnInit {
       if (barcodes[0].valueType === BarcodeValueType.Wifi) {
         this.wifiFunction(barcodes[0].rawValue);
       } else {
-        this.wifiData = [];
+        this.specialData = [];
+      }
+      if (barcodes[0].valueType === BarcodeValueType.ContactInfo) {
+        this.contactFunction(barcodes[0].rawValue);
+      } else {
+        this.specialData = [];
       }
     } catch (error) {
       console.log(error);
@@ -201,14 +283,18 @@ export class Tab3Page implements OnInit {
       if (barcodes[0].valueType === BarcodeValueType.Wifi) {
         this.wifiFunction(barcodes[0].rawValue);
       } else {
-        this.wifiData = [];
+        this.specialData = [];
+      }
+      if (barcodes[0].valueType === BarcodeValueType.ContactInfo) {
+        this.contactFunction(barcodes[0].rawValue);
+      } else {
+        this.specialData = [];
       }
     } catch (error) {
       console.log(error);
       this.showProgressBar = false;
     }
   }
-
 
   async requestPermissions(): Promise<boolean> {
     const { camera } = await BarcodeScanner.requestPermissions();
@@ -224,11 +310,14 @@ export class Tab3Page implements OnInit {
     await alert.present();
   }
 
-  getButtonText(type: string, value: string) {
+  getButtonText(type: string, value: string): string {
     let result = 'Copiar Texto';
     switch (type) {
       case BarcodeValueType.Sms:
         result = `Mandar SMS`;
+        break;
+      case BarcodeValueType.ContactInfo:
+        result = `Agregar contacto`;
         break;
       case BarcodeValueType.Email:
         result = `Mandar Email`;
@@ -240,35 +329,40 @@ export class Tab3Page implements OnInit {
         result = `Configurar WiFi`;
         break;
       case BarcodeValueType.Url:
-        result = `Visitar sitio web`
-        if (value.includes('wa.me') || value.includes('whatsapp')) {
+        result = `Visitar sitio web`;
+  
+        if (value.match(/wa\.me|whatsapp/)) {
           result = `Mandar un WhatsApp`;
         }
-        if (value.includes('youtube')) {
+        if (value.match(/youtube/)) {
           result = `Ir a Youtube`;
         }
-        if (value.includes('facebook')) {
+        if (value.match(/facebook/)) {
           result = `Ir a Facebook`;
         }
-        if (value.includes('instagram')) {
+        if (value.match(/instagram/)) {
           result = `Ir a Instagram`;
         }
-        if (value.includes('linkedin')) {
+        if (value.match(/linkedin/)) {
           result = `Ir a LinkedIn`;
         }
-        if (value.includes('twitter') || value.includes('x.com')) {
+        if (value.match(/twitter|x\.com/)) {
           result = `Ir a Twitter`;
         }
         break;
     }
+  
     return result;
   }
 
-  getButtonIcon(type: string, value: string) {
+  getButtonIcon(type: string, value: string): string {
     let result = 'copy';
     switch (type) {
       case BarcodeValueType.Sms:
         result = `chatbubbles-outline`;
+        break;
+      case BarcodeValueType.ContactInfo:
+        result = `person-add-outline`;
         break;
       case BarcodeValueType.Email:
         result = `mail-outline`;
@@ -281,29 +375,31 @@ export class Tab3Page implements OnInit {
         break;
       case BarcodeValueType.Url:
         result = `link`;
-        if (value.includes('wa.me') || value.includes('whatsapp')) {
+  
+        if (value.match(/wa\.me|whatsapp/)) {
           result = `logo-whatsapp`;
         }
-        if (value.includes('youtube')) {
+        if (value.match(/youtube/)) {
           result = `logo-youtube`;
         }
-        if (value.includes('facebook')) {
+        if (value.match(/facebook/)) {
           result = `logo-facebook`;
         }
-        if (value.includes('instagram')) {
+        if (value.match(/instagram/)) {
           result = `logo-instagram`;
         }
-        if (value.includes('linkedin')) {
+        if (value.match(/linkedin/)) {
           result = `logo-linkedin`;
         }
-        if (value.includes('twitter') || value.includes('x.com')) {
+        if (value.match(/twitter|x\.com/)) {
           result = `logo-twitter`;
         }
         break;
     }
+  
     return result;
   }
-
+  
   getTitleText(type: string, value: string) {
     let result = type;
     this.showActionButton = true;
@@ -311,6 +407,9 @@ export class Tab3Page implements OnInit {
       case BarcodeValueType.Text:
         this.showActionButton = false;
         result = `Texto`;
+        break;
+      case BarcodeValueType.ContactInfo:
+        result = `Contacto`;
         break;
       case BarcodeValueType.Phone:
         result = `Teléfono`;

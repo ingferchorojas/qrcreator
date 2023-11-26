@@ -295,9 +295,12 @@ export class Tab1Page {
       return;
     }
     this.textoQR = `${this.url}`;
+    if (!this.textoQR.match(/http(s)?:\/\//)) {
+      this.textoQR = 'https://' + this.textoQR;
+    }
     this.record_icon = 'link';
     this.modal.dismiss(null, 'confirm');
-  }
+  }  
 
   async confirmPhone() {
     if (this.phone.length < 1) {
@@ -348,6 +351,12 @@ export class Tab1Page {
   }
 
   async confirmSocialMedia() {
+    // Alertas
+    if (this.socialMediaUsername.length < 1) {
+      const message = 'El usuario es requerido';
+      await this.alertFunction(message);
+      return;
+    }
     this.socialMediaUrl += this.socialMediaUsername;
     this.textoQR = this.socialMediaUrl;
     this.record_icon = this.socialMediaIcon;

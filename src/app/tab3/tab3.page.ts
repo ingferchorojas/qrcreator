@@ -33,7 +33,7 @@ export class Tab3Page implements OnInit {
     {
       displayValue: 'Capacitorjs',
       format: BarcodeFormat.QrCode,
-      rawValue: 'WIFI:T:WPA;S:Rojas y Asociados;P:RojasyRojas;H:true;',
+      rawValue: 'WIFI:T:WPA;S:RojasyAsociados;P:RojasyRojas;H:true;',
       valueType: BarcodeValueType.Wifi
     },
     {
@@ -87,7 +87,6 @@ export class Tab3Page implements OnInit {
   }
 
   async actionButton(type: BarcodeValueType, value: string) {
-
     const browserTypes = [
       BarcodeValueType.Sms,
       BarcodeValueType.Phone,
@@ -125,7 +124,7 @@ export class Tab3Page implements OnInit {
     const wifi = value.split(';');
     for (const element of wifi) {
       const type = element && element.length > 0 ? element.split(':') : []
-      if (type && type.length > 0 && type[0].toLowerCase() === 's' && type[1].length > 0) {
+      if (type && type.length > 0 && type[0].toLowerCase() === 's') {
         const obj = {
           icon: 'wifi-outline',
           value: type[1],
@@ -133,7 +132,7 @@ export class Tab3Page implements OnInit {
         };
         if (!this.specialData.includes(obj)) this.specialData.push(obj);
       }
-      if (type && type.length > 0 && type[0].toLowerCase() === 'p' && type[1].length > 0) {
+      if (type && type.length > 0 && type[0].toLowerCase() === 'p') {
         const obj = {
           icon: 'ellipsis-horizontal-sharp',
           value: type[1],
@@ -141,7 +140,7 @@ export class Tab3Page implements OnInit {
         };
         if (!this.specialData.includes(obj)) this.specialData.push(obj);
       }
-      if (type && type.length > 0 && type[0].toLowerCase() === 't' && type[1].length > 0) {
+      if (type && type.length > 0 && type[0].toLowerCase() === 't') {
         const obj = {
           icon: 'bag-outline',
           value: type[1],
@@ -149,7 +148,7 @@ export class Tab3Page implements OnInit {
         };
         if (!this.specialData.includes(obj)) this.specialData.push(obj);
       }
-      if (type && type.length > 0 && type[0].toLowerCase() === 'h' && type[1].length > 0) {
+      if (type && type.length > 0 && type[0].toLowerCase() === 'h') {
         const isHidden = type[1]
         const obj = {
           icon: isHidden === 'false' ? 'eye-outline' : 'eye-off-outline',
@@ -239,6 +238,7 @@ export class Tab3Page implements OnInit {
   
   async scan(): Promise<void> {
     try {
+      this.specialData = [];
       this.showProgressBar = true;
       const granted = await this.requestPermissions();
       if (!granted) {
@@ -250,14 +250,10 @@ export class Tab3Page implements OnInit {
       this.barcodes = barcodes
       if (barcodes[0].valueType === BarcodeValueType.Wifi) {
         this.wifiFunction(barcodes[0].rawValue);
-      } else {
-        this.specialData = [];
-      }
+      } 
       if (barcodes[0].valueType === BarcodeValueType.ContactInfo) {
         this.contactFunction(barcodes[0].rawValue);
-      } else {
-        this.specialData = [];
-      }
+      } 
     } catch (error) {
       console.log(error);
       this.showProgressBar = false;
@@ -271,6 +267,7 @@ export class Tab3Page implements OnInit {
       if (!path) {
         return;
       }
+      this.specialData = [];
       this.showProgressBar = true;
       const { barcodes } = await BarcodeScanner.readBarcodesFromImage({
         path
@@ -282,14 +279,10 @@ export class Tab3Page implements OnInit {
       this.barcodes = barcodes;
       if (barcodes[0].valueType === BarcodeValueType.Wifi) {
         this.wifiFunction(barcodes[0].rawValue);
-      } else {
-        this.specialData = [];
-      }
+      } 
       if (barcodes[0].valueType === BarcodeValueType.ContactInfo) {
         this.contactFunction(barcodes[0].rawValue);
-      } else {
-        this.specialData = [];
-      }
+      } 
     } catch (error) {
       console.log(error);
       this.showProgressBar = false;
@@ -326,7 +319,7 @@ export class Tab3Page implements OnInit {
         result = `Configurar WiFi`;
         break;
       case BarcodeValueType.Url:
-        result = `Visitar sitio web`;
+        result = `Visitar enlace`;
   
         if (value.match(/wa\.me|whatsapp/)) {
           result = `Mandar un WhatsApp`;
@@ -396,28 +389,34 @@ export class Tab3Page implements OnInit {
   
   getTitleText(type: string, value: string) {
     let result = type;
-    this.showActionButton = true;
+    this.showActionButton = false;
     switch (type) {
-      case BarcodeValueType.Text:
-        this.showActionButton = false;
+      case BarcodeValueType.Text:   
         result = `Texto`;
         break;
       case BarcodeValueType.ContactInfo:
-        this.showActionButton = false;
         result = `Contacto`;
         break;
       case BarcodeValueType.Phone:
         result = `Teléfono`;
+        this.showActionButton = true;
+        break;
+      case BarcodeValueType.Email:
+        this.showActionButton = true;
+        break;
+      case BarcodeValueType.Sms:
+        this.showActionButton = true;
         break;
       case BarcodeValueType.Url:
-        result = value.includes('wa.me') || value.includes('whatsapp') ? `WhatsApp` : `Enlace`;
+        result = value.match(/wa\.me|whatsapp/) ? `WhatsApp` : `Enlace`;
+        this.showActionButton = true;
         break;
       case BarcodeValueType.Product:
-        this.showActionButton = false;
         result = `Producto`;
         break;
       case BarcodeValueType.Wifi:
         result = `Wifi`;
+        this.showActionButton = true;
         break;
     }
     return result;

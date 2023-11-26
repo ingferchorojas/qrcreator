@@ -27,7 +27,7 @@
         </ion-item>
       </ion-list>
     </ion-card-content>
-    <ion-button (click)="copyText(barcode.displayValue)">
+    <ion-button (click)="copyText(barcode?.rawValue ?? barcode.displayValue)">
       <ion-icon slot="start" name="copy"></ion-icon>
       Copiar
     </ion-button>

@@ -1,5 +1,5 @@
 {
-  "name": "Generador QR",
+  "name": "Generador y Escáner QR",
   "integrations": {
     "capacitor": {}
   },

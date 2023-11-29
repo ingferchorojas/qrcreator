@@ -11,7 +11,7 @@ const config: CapacitorConfig = {
     }
   },
   appId: 'io.ionic.starter',
-  appName: 'Generador QR',
+  appName: 'Generador y Escáner QR',
   webDir: 'www',
   server: {
     androidScheme: 'https'

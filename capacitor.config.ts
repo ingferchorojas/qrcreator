@@ -10,7 +10,7 @@ const config: CapacitorConfig = {
       layoutName: "launch_screen"
     }
   },
-  appId: 'io.ionic.starter',
+  appId: 'com.frojasapps.generadorqr',
   appName: 'Generador y Escáner QR',
   webDir: 'www',
   server: {

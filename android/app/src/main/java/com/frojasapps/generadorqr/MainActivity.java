@@ -1,4 +1,4 @@
-package io.ionic.starter;
+package com.frojasapps.generadorqr;
 
 import com.getcapacitor.BridgeActivity;
 

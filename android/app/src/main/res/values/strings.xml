@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Generador y Escáner QR</string>
-    <string name="title_activity_main">Generador y Escáner QR</string>
-    <string name="package_name">com.frojasapps.generadorqr</string>
-    <string name="custom_url_scheme">com.frojasapps.generadorqr</string>
+    <string name="app_name">QR Generador y Escáner</string>
+    <string name="title_activity_main">QR Generador y Escáner</string>
+    <string name="package_name">com.frojasapps.creadorqr</string>
+    <string name="custom_url_scheme">com.frojasapps.creadorqr</string>
 </resources>

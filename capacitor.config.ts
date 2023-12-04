@@ -10,8 +10,8 @@ const config: CapacitorConfig = {
       layoutName: "launch_screen"
     }
   },
-  appId: 'com.frojasapps.generadorqr',
-  appName: 'Generador y Escáner QR',
+  appId: 'com.frojasapps.creadorqr',
+  appName: 'QR Generador y Escáner',
   webDir: 'www',
   server: {
     androidScheme: 'https'

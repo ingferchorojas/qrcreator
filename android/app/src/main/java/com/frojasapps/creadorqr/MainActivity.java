@@ -1,4 +1,4 @@
-package com.frojasapps.generadorqr;
+package com.frojasapps.creadorqr;
 
 import com.getcapacitor.BridgeActivity;
 

@@ -5,3 +5,7 @@ Crea códigos personalizados para contactos, redes sociales y más, y accede rá
 ## Generar QR
 
 ![](https://github.com/ingferchorojas/qrcreator/blob/main/generar_qr_ejemplo.gif)
+
+## Historial y Escáner
+
+![](https://github.com/ingferchorojas/qrcreator/blob/main/historial_escaner.gif)

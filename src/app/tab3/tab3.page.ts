@@ -69,23 +69,32 @@ export class Tab3Page implements OnInit {
     BarcodeScanner.isSupported().then((result) => {
       this.isSupported = result.supported;
     });
+  
     BarcodeScanner.isGoogleBarcodeScannerModuleAvailable().then((result) => {
       if (result.available) {
         this.googleBarcodeScannerAvailable = result.available;
+        this.scanIfPossible(); // Intentar escanear si es posible
       } else {
         this.showProgressBar = true;
         BarcodeScanner.installGoogleBarcodeScannerModule().then(() => {
           this.showProgressBar = false;
           this.googleBarcodeScannerAvailable = true;
+          this.scanIfPossible(); // Intentar escanear si es posible después de instalar
         }).catch(() => {
           this.showProgressBar = false;
           this.googleBarcodeScannerAvailable = false;
-          this.alertFunction('Error al instalar el módulo necesario para escanear códigos')
-        })
+          this.alertFunction('Error al instalar el módulo necesario para escanear códigos');
+        });
       }
-    }) 
+    });
   }
 
+  private scanIfPossible(): void {
+    if (this.googleBarcodeScannerAvailable) {
+      this.scan();
+    }
+  }
+  
   async actionButton(type: BarcodeValueType, value: string) {
     const browserTypes = [
       BarcodeValueType.Sms,
